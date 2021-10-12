@@ -16,7 +16,7 @@ app.use(cors({ //添加允许跨域的客户端地址
 // 拦截特定请求进行token验证
 app.use((req, res, next)=>{ 
   
-    if (req.url != '/user/ulogin' && 
+    if (req.url != '/user/ureg' && 
     (req.url.startsWith("/user") || 
     req.url.startsWith("/orders"))) {
       let token = req.headers.token;
@@ -57,7 +57,7 @@ app.use("/sp",shopcarRouter)
 
 
 
-//错误处理
+//对错误格式进行错误处理
 app.use((err,req,res,next)=>{
     
     if(err instanceof joi.ValidationError) {return res.send({
@@ -73,5 +73,5 @@ app.use((err,req,res,next)=>{
 
 
 app.listen("4231",()=>{
-    console.log("启动成功 端口号:4231");
+    console.log(`启动成功 端口号:4231`);
 })

@@ -10,15 +10,16 @@ const joi=require("joi");
 
 
 */
-const user_name=joi.string().alphanum().min(4).max(10).required();
-const user_pwd=joi.string().pattern(/^[\S]{6,12}$/).required();
-
+const uname=joi.string().alphanum().min(4).max(10).required();
+const upwd=joi.string().pattern(/^[\S]{6,12}$/).required();
+const uemail=joi.string().email();
 // 定义验证注册和登陆表单数据的规则对象
 
 exports.reg_login_schema={
     // 验证body类型的数据
     body:{
-        user_name,
-        user_pwd,
+        uname,
+        upwd,
+        uemail
     }
 }

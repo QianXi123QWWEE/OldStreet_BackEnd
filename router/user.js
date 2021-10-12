@@ -18,18 +18,17 @@ const { JsonWebTokenError } = require("jsonwebtoken");
 // 登录                  数据验证中间件进行查找过滤不合法数据
 router.post("/ulogin",expressjoi(reg_login_schema),(req, res) => {
    let user= req.user;  //保存上一次的用户对象
-    var { user_name, user_pwd } = req.body;
-    user_pwd=md5(user_pwd);
-    var sql1 = "select * from user_table where user_name=? and user_pwd=?"
-    pool.query(sql1,[user_name,user_pwd],(err,result)=>{
+    var { uname, upwd } = req.body;
+    upwd=md5(upwd);
+    var sql1 = "select * from lj_user where uname=? and upwd=?"
+    pool.query(sql1,[uname,upwd],(err,result)=>{
         if(err) throw err;
-        
         if(result.length>0){
-            let {user_name,user_sex,user_avatar}=result[0];
+            let {uname,email,phone,avatar,gender}=result[0];
             res.send({
                 ok:1,
                 msg:"登录成功",
-                data:{user_name,user_sex,user_avatar}, //返回给客户端的数据
+                data:{uname,email,phone,avatar,gender}, //返回给客户端的数据
                 token:jwt.generateToken(result[0])    //返回token
             })
         }else{
@@ -79,9 +78,10 @@ router.get("/loginout",(req,res)=>{
 // 注册接口
 router.post("/ureg",expressjoi(reg_login_schema),
     (req, res) => { //通过验证
-        var { user_name, user_pwd } = req.body;
-        var spl1 = "select * from user_table where user_name=?"//查询语句
-        pool.query(spl1,user_name, (err, result) => {
+        var { uname,upwd,uemail } = req.body;
+        var spl1 = "select * from lj_user where uname=?"//查询语句
+        pool.query(spl1,uname, (err, result) => {
+            if(err) throw err;
             if (result.length > 0) {
                 res.send({
                     ok: 0,
@@ -90,36 +90,20 @@ router.post("/ureg",expressjoi(reg_login_schema),
             } else {
                 //插入用户
                 // 将密码通过md5加密
-                user_pwd=md5(user_pwd);
-                var sql2 = "insert into user_table(user_name,user_pwd)values(?,?)";
-                pool.query(sql2, [user_name, user_pwd], (err, result) => {
-                    if (err) {
-                        console.log(err);
+                upwd=md5(upwd);
+                var sql2 = "insert into lj_user(uname,upwd,uemail)values(?,?,?)";
+                pool.query(sql2, [uname,upwd,uemail], (err, result) => {
+                    if(err) throw err;
+                    if(result.affectedRows){
                         res.send({
-                            ok: 0,
-                            msg: "注册失败"
+                            ok:1,
+                            msg:"注册成功"
                         })
-                    } else {
-                        // 保存注册的用户主键id
-                        var ulid = result.insertId;
-                        // 创建用户对应的购物车表
-                        var sql3 = "insert into shop_car_table(car_user_lid)values(?)"
-                        pool.query(sql3, ulid, (err, result) => {
-                            if (err) {
-                                console.log(err);
-                                res.send({
-                                    ok: 0,
-                                    msg: "注册失败,默认购物车添加失败"
-                                })
-                            } else {
-                                console.log(`Id为${ulid}的用户添加成功`)
-                                res.send({
-                                    ok: 1,
-                                    msg: "注册成功"
-                                })
-                            }
-                        })
-
+                    }else{
+                    res.send({
+                        ok:0,
+                        msg:"注册失败"
+                    })
                     }
                 })
 
