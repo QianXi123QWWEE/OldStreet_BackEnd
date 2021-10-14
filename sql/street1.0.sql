@@ -13,13 +13,14 @@
 
  Date: 12/10/2021 14:38:56
 */
-
+drop database if exists street;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
 -- ----------------------------
 -- Table structure for details
 -- ----------------------------
+create database street charset=utf8;
+USE street;
 DROP TABLE IF EXISTS `details`;
 CREATE TABLE `details`  (
   `did` int(11) NOT NULL AUTO_INCREMENT,
