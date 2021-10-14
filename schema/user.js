@@ -1,5 +1,5 @@
 // 导入定义验证的包
-const joi=require("joi");
+const joi = require("joi");
 /*
     string() 值必须是字符串
     alphanum() 值必须包含a-z A-Z,0-9的字符串
@@ -10,14 +10,14 @@ const joi=require("joi");
 
 
 */
-const uname=joi.string().alphanum().min(4).max(10).required();
-const upwd=joi.string().pattern(/^[\S]{6,12}$/).required();
-const uemail=joi.string().email();
+const uname = joi.string().alphanum().min(4).max(10).required();
+const upwd = joi.string().pattern(/^[\S]{6,12}$/).required();
+const uemail = joi.string().email();
 // 定义验证注册和登陆表单数据的规则对象
 
-exports.reg_login_schema={
+exports.reg_login_schema = {
     // 验证body类型的数据
-    body:{
+    body: {
         uname,
         upwd,
         uemail
