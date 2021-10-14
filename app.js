@@ -4,7 +4,7 @@ const joi = require("joi");
 // toke模块引入
 const jwt = require("./jwt");
 
-// 127.0.0.1:4231/v1/
+
 
 
 // cors跨域
